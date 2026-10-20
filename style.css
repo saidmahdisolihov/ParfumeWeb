@@ -167,15 +167,20 @@ h1, h2, h3, h4, h5, h6 {
 
 .brand-name {
     font-family: var(--font-heading);
-    font-weight: 900;
-    font-size: 1.4rem;
-    letter-spacing: 2.5px;
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: 1px;
     color: var(--text-pure);
+}
+
+.brand-dot {
+    color: var(--primary);
+    font-weight: 900;
 }
 
 .brand-sub {
     font-size: 0.65rem;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     color: var(--primary-light);
     font-weight: 600;
 }
@@ -459,17 +464,21 @@ h1, h2, h3, h4, h5, h6 {
 
 .showcase-img-wrap {
     width: 100%;
-    height: 340px;
+    height: 320px;
     border-radius: var(--radius-md);
     overflow: hidden;
     margin-bottom: 1.25rem;
-    background: #000;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
 }
 
 .hero-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -707,19 +716,23 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
     height: 270px;
     overflow: hidden;
-    background: #0d1017;
+    background: #ffffff;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.85rem;
 }
 
 .product-media img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .product-card:hover .product-media img {
-    transform: scale(1.08);
+    transform: scale(1.06);
 }
 
 .product-body {
@@ -1035,6 +1048,7 @@ h1, h2, h3, h4, h5, h6 {
     top: 0;
     width: 100%;
     height: 100%;
+    height: 100dvh;
     background-color: rgba(4, 6, 9, 0.85);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -1043,6 +1057,8 @@ h1, h2, h3, h4, h5, h6 {
     padding: 1rem;
     opacity: 0;
     transition: opacity 0.3s ease;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .modal.active {
@@ -1051,15 +1067,21 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modal-content {
-    background: rgba(18, 22, 32, 0.95);
+    background: rgba(18, 22, 32, 0.98);
     border: 1px solid var(--border-glow);
     border-radius: var(--radius-lg);
-    padding: 2.5rem;
+    padding: 2.2rem 1.8rem;
     width: 100%;
-    max-width: 460px;
+    max-width: 480px;
+    max-height: 90vh;
+    max-height: 90dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     position: relative;
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 158, 11, 0.2);
     animation: modalPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    margin: auto;
 }
 
 @keyframes modalPop {
@@ -1121,9 +1143,11 @@ h1, h2, h3, h4, h5, h6 {
 .modal-thumb {
     width: 65px;
     height: 65px;
-    object-fit: cover;
+    object-fit: contain;
+    background: #ffffff;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border-glow);
+    padding: 2px;
 }
 
 .modal-product-info h4 {
@@ -1386,16 +1410,42 @@ h1, h2, h3, h4, h5, h6 {
         display: none;
     }
 
+    .nav-container {
+        padding: 0.75rem 1rem;
+    }
+
+    .nav-actions {
+        gap: 0.65rem;
+    }
+
+    .nav-phone {
+        display: none;
+    }
+
+    .order-nav-btn {
+        display: none;
+    }
+
     .hero {
-        padding-top: 6rem;
+        padding-top: 5.5rem;
     }
 
     .hero-title {
-        font-size: 2.3rem;
+        font-size: 2.1rem;
     }
 
     .hero-desc {
-        font-size: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .hero-stats {
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .stat-item {
+        align-items: center;
     }
 
     .product-grid {
@@ -1416,8 +1466,116 @@ h1, h2, h3, h4, h5, h6 {
     }
 
     .floating-actions-container {
-        bottom: 1.25rem;
+        bottom: max(1.25rem, env(safe-area-inset-bottom));
         right: 1.25rem;
+    }
+
+    .floating-cart-btn,
+    .float-btn {
+        width: 52px;
+        height: 52px;
+        font-size: 1.35rem;
+    }
+
+    /* Modal on tablets/phones */
+    .modal {
+        padding: 0.5rem;
+    }
+
+    .modal-content {
+        padding: 1.75rem 1.25rem;
+        max-height: 94vh;
+        max-height: 94dvh;
+        border-radius: var(--radius-md);
+    }
+
+    /* Cart drawer on mobile */
+    .cart-drawer {
+        max-width: 100%;
+        border-left: none;
+    }
+
+    /* Prevent iOS Safari auto-zoom when tapping inputs */
+    input[type="text"],
+    input[type="tel"],
+    input[type="number"],
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .brand-name {
+        font-size: 1.15rem;
+        letter-spacing: 0.5px;
+    }
+
+    .brand-sub {
+        font-size: 0.58rem;
+        letter-spacing: 1px;
+    }
+
+    .brand-badge {
+        font-size: 0.65rem;
+        padding: 0.15rem 0.4rem;
+    }
+
+    .cart-nav-btn {
+        padding: 0.45rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .cart-text {
+        display: none;
+    }
+
+    .hero-title {
+        font-size: 1.85rem;
+    }
+
+    .hero-badge {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.85rem;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .hero-buttons a {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .modal-header h2 {
+        font-size: 1.4rem;
+    }
+
+    .modal-product-preview {
+        padding: 0.6rem 0.75rem;
+    }
+
+    .modal-thumb {
+        width: 52px;
+        height: 52px;
+    }
+
+    .modal-product-info h4 {
+        font-size: 0.95rem;
+    }
+
+    .pay-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.35rem;
+    }
+
+    .pay-number-group {
+        width: 100%;
+        justify-content: space-between;
     }
 }
 
@@ -1510,6 +1668,7 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     background: rgba(4, 6, 9, 0.75);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -1529,8 +1688,10 @@ h1, h2, h3, h4, h5, h6 {
     top: 0;
     right: 0;
     width: 100%;
-    max-width: 440px;
+    max-width: 480px;
     height: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
     background: #0d1017;
     border-left: 1px solid var(--border-glow);
     display: flex;
@@ -1538,6 +1699,9 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: -15px 0 50px rgba(0, 0, 0, 0.8);
     transform: translateX(100%);
     transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
 }
 
 .cart-drawer-overlay.active .cart-drawer {
@@ -1545,12 +1709,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .cart-drawer-header {
-    padding: 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    padding: 1.25rem 1.5rem;
     border-bottom: 1px solid var(--border-subtle);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #111520;
+    background: rgba(17, 21, 32, 0.98);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    flex-shrink: 0;
 }
 
 .cart-title-wrap h3 {
@@ -1591,6 +1761,7 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.85rem;
     color: #34d399;
     text-align: center;
+    flex-shrink: 0;
 }
 
 .cart-free-shipping-banner strong {
@@ -1598,8 +1769,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .cart-drawer-body {
-    flex: 1;
-    overflow-y: auto;
+    flex-shrink: 0;
     padding: 1.25rem;
     display: flex;
     flex-direction: column;
@@ -1625,10 +1795,12 @@ h1, h2, h3, h4, h5, h6 {
 .cart-item-img {
     width: 60px;
     height: 60px;
-    object-fit: cover;
+    object-fit: contain;
+    background: #ffffff;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border-glow);
     flex-shrink: 0;
+    padding: 2px;
 }
 
 .cart-item-info {
@@ -1736,9 +1908,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .cart-drawer-footer {
-    padding: 1.25rem;
+    padding: 1.25rem 1.25rem max(2.5rem, env(safe-area-inset-bottom));
     border-top: 1px solid var(--border-subtle);
     background: #111520;
+    flex-shrink: 0;
 }
 
 .cart-summary-box {
@@ -1889,4 +2062,261 @@ h1, h2, h3, h4, h5, h6 {
     transform: translateX(-50%) translateY(0);
     opacity: 1;
 }
+
+/* ===================================================
+   MODAL PRICING BREAKDOWN & PRE-PAYMENT STYLES
+   =================================================== */
+
+.modal-pricing-box {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 0.85rem 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.modal-pricing-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.4rem;
+}
+
+.delivery-fee-text,
+.delivery-fee-badge {
+    color: #fbbf24;
+    font-weight: 700;
+}
+
+.modal-pricing-row.total-pay-row {
+    border-top: 1px dashed var(--border-subtle);
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-pure);
+}
+
+.modal-total-pay {
+    color: var(--primary-light);
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+}
+
+/* Pre-Payment Step Box */
+.payment-step-card {
+    background: linear-gradient(145deg, rgba(245, 158, 11, 0.08), rgba(16, 185, 129, 0.05));
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    border-radius: var(--radius-md);
+    padding: 1.15rem;
+    margin: 1.25rem 0;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    position: relative;
+}
+
+.payment-step-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.payment-step-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-pure);
+    margin-bottom: 0.4rem;
+}
+
+.payment-step-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    margin-bottom: 0.85rem;
+}
+
+.pay-amount-highlight {
+    color: #fbbf24;
+    font-weight: 800;
+    font-size: 1.05em;
+    background: rgba(245, 158, 11, 0.15);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+}
+
+.payment-wallets {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.85rem;
+    flex-wrap: wrap;
+}
+
+.wallet-pill {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.3rem 0.75rem;
+    border-radius: var(--radius-full);
+}
+
+.wallet-pill.active {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: var(--primary);
+    color: var(--primary-light);
+}
+
+.payment-account-box {
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid var(--border-glow);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 0.9rem;
+    margin-bottom: 0.85rem;
+}
+
+.pay-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+    flex-wrap: wrap;
+}
+
+.pay-tag {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.pay-number-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pay-number-text {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: #fff;
+    letter-spacing: 0.5px;
+}
+
+.copy-btn {
+    background: rgba(245, 158, 11, 0.18);
+    border: 1px solid var(--border-glow);
+    color: var(--primary-light);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.copy-btn:hover {
+    background: var(--primary);
+    color: #080a0f;
+}
+
+.pay-recipient-text {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.pay-recipient-text strong {
+    color: var(--text-primary);
+}
+
+.proof-group {
+    margin-top: 0.85rem;
+    margin-bottom: 0.85rem;
+}
+
+.proof-group label {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 0.35rem;
+}
+
+.proof-group input {
+    width: 100%;
+    padding: 0.75rem 0.95rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: var(--text-pure);
+    font-size: 0.9rem;
+}
+
+.payment-confirm-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    cursor: pointer;
+    margin-top: 0.85rem;
+    font-size: 0.86rem;
+    color: var(--text-pure);
+    line-height: 1.4;
+    user-select: none;
+}
+
+.payment-confirm-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+.payment-confirm-checkbox span {
+    font-weight: 600;
+    color: #fef08a;
+}
+
+.cart-payment-card {
+    margin: 0.75rem 0;
+    padding: 0.95rem;
+}
+
+/* Custom Scrollbars for Cart Drawer and Modal on Laptops */
+.cart-drawer::-webkit-scrollbar,
+.modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cart-drawer::-webkit-scrollbar-track,
+.modal-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.cart-drawer::-webkit-scrollbar-thumb,
+.modal-content::-webkit-scrollbar-thumb {
+    background: rgba(245, 158, 11, 0.45);
+    border-radius: 4px;
+}
+
+.cart-drawer::-webkit-scrollbar-thumb:hover,
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+/* Firefox scrollbar support */
+.cart-drawer,
+.modal-content {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(245, 158, 11, 0.45) rgba(0, 0, 0, 0.4);
+}
+
 

@@ -82,6 +82,25 @@ document.addEventListener('DOMContentLoaded', () => {
         cart = [];
     }
 
+    // Global function for copying payment number
+    window.copyPaymentNumber = function(number, btn) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(number).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Нусха шуд!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            }).catch(() => {
+                alert('Рақами ҳамён: ' + number);
+            });
+        } else {
+            alert('Рақами ҳамён: ' + number);
+        }
+    };
+
+    const DELIVERY_FEE = 10; // Интиқол дар ш. Душанбе: 10 сомонӣ
+
     const openCartBtn = document.getElementById('openCartBtn');
     const floatingCartBtn = document.getElementById('floatingCartBtn');
     const closeCartBtn = document.getElementById('closeCartBtn');
@@ -91,7 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartCount = document.getElementById('cartCount');
     const floatingCartCount = document.getElementById('floatingCartCount');
     const cartSummaryTotalQty = document.getElementById('cartSummaryTotalQty');
+    const cartProductsTotal = document.getElementById('cartProductsTotal');
     const cartGrandTotal = document.getElementById('cartGrandTotal');
+    const cartPromptTotal = document.getElementById('cartPromptTotal');
     const cartCheckoutForm = document.getElementById('cartCheckoutForm');
     const cartOrderStatus = document.getElementById('cartOrderStatus');
     const cartSubmitOrderBtn = document.getElementById('cartSubmitOrderBtn');
@@ -141,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Add item to cart
     function addToCart(name, price, img) {
-        const numericPrice = parseInt(price, 10) || 169;
+        const numericPrice = parseInt(price, 10) || 119;
         const existingIndex = cart.findIndex(item => item.name === name);
 
         if (existingIndex > -1) {
@@ -151,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 id: 'prod_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
                 name: name,
                 price: numericPrice,
-                img: img || 'images/marine-squash.jpg',
+                img: img || 'images/5386605909880020266_121.jpg',
                 qty: 1
             });
         }
@@ -186,17 +207,20 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderCart() {
         const totalItemsCount = cart.reduce((sum, item) => sum + item.qty, 0);
         const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        const grandTotal = totalItemsCount > 0 ? (totalPrice + DELIVERY_FEE) : 0;
 
         // Update badges
         if (cartCount) cartCount.textContent = totalItemsCount;
         if (floatingCartCount) floatingCartCount.textContent = totalItemsCount;
         if (cartItemsCountText) cartItemsCountText.textContent = `${totalItemsCount} маҳсулот`;
         if (cartSummaryTotalQty) cartSummaryTotalQty.textContent = `${totalItemsCount} дона`;
-        if (cartGrandTotal) cartGrandTotal.textContent = `${totalPrice} TJS`;
+        if (cartProductsTotal) cartProductsTotal.textContent = `${totalPrice} TJS`;
+        if (cartGrandTotal) cartGrandTotal.textContent = `${grandTotal} TJS`;
+        if (cartPromptTotal) cartPromptTotal.textContent = `${grandTotal} TJS`;
 
         if (cartSubmitOrderBtn) {
             cartSubmitOrderBtn.querySelector('span').textContent = 
-                totalPrice > 0 ? `Тасдиқ ва Ирсоли Фармоиш (${totalPrice} TJS)` : `Сабад холӣ аст`;
+                totalPrice > 0 ? `Тасдиқи пардохт ва Ирсол (${grandTotal} TJS)` : `Сабад холӣ аст`;
             cartSubmitOrderBtn.disabled = (totalItemsCount === 0);
         }
 
@@ -260,9 +284,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            const paymentConfirm = document.getElementById('cartPaymentConfirm');
+            if (paymentConfirm && !paymentConfirm.checked) {
+                alert('⚠️ Лутфан аввал маблағро пардохт намуда, катакчаи "Ман маблағро пардохт намудам"-ро тасдиқ намоед!');
+                paymentConfirm.focus();
+                return;
+            }
+
+            const paymentProof = document.getElementById('cartPaymentProof') ? document.getElementById('cartPaymentProof').value.trim() : '';
+            if (!paymentProof) {
+                alert('⚠️ Лутфан рақами телефон ё чекеро, ки аз он маблағро гузарондед, ворид намоед.');
+                document.getElementById('cartPaymentProof').focus();
+                return;
+            }
+
             const name = document.getElementById('cartCustomerName').value.trim();
             const phone = document.getElementById('cartCustomerPhone').value.trim();
-            const address = document.getElementById('cartCustomerAddress').value.trim() || 'Душанбе (ройгон)';
+            const address = document.getElementById('cartCustomerAddress').value.trim() || 'Душанбе';
 
             let productListText = '';
             let totalSum = 0;
@@ -273,10 +311,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 productListText += `${index + 1}. <b>${item.name}</b> — ${item.qty} дона × ${item.price} TJS = <b>${subtotal} TJS</b>\n`;
             });
 
-            const message = `🛒 <b>ФАРМОИШИ НАВ АЗ САБАД (EIKOSHA)!</b>\n\n` +
+            const grandTotal = totalSum + DELIVERY_FEE;
+
+            const message = `🛒 <b>ФАРМОИШИ НАВ АЗ VORTEX.AUTO_TJ (САБАД)!</b>\n\n` +
                             `📦 <b>Рӯйхати маҳсулот:</b>\n${productListText}\n` +
-                            `🚚 <b>Интиқол:</b> РОЙГОН (ш. Душанбе)\n` +
-                            `💰 <b>МАБЛАҒИ УМУМӢ:</b> <b>${totalSum} TJS</b>\n\n` +
+                            `💵 <b>Маблағи маҳсулот:</b> ${totalSum} TJS\n` +
+                            `🚚 <b>Интиқол (Даставка):</b> ${DELIVERY_FEE} TJS\n` +
+                            `💰 <b>ҶАМЪИ ПАРДОХТ:</b> <b>${grandTotal} TJS</b>\n\n` +
+                            `💳 <b>ҲОЛАТИ ПАРДОХТ:</b> ✅ ПАРДОХТ ШУДААСТ (Пешпардохт)\n` +
+                            `🧾 <b>Аз рақам / Рақами чек:</b> ${paymentProof}\n\n` +
                             `👤 <b>Мизоҷ:</b> ${name}\n` +
                             `📞 <b>Телефон:</b> ${phone}\n` +
                             `📍 <b>Суроға:</b> ${address}\n` +
@@ -299,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (response.ok) {
-                    cartOrderStatus.textContent = '✅ Ташаккур! Фармоиши шумо қабул шуд. Мо ба зудӣ тамос мегирем!';
+                    cartOrderStatus.textContent = '✅ Ташаккур! Пардохт ва фармоиши шумо қабул шуд. Мо ба зудӣ тамос мегирем!';
                     cartOrderStatus.style.color = '#10b981';
                     cartCheckoutForm.reset();
                     cart = [];
@@ -334,17 +377,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalProductTitle = document.getElementById("modalProductTitle");
     const modalProductPrice = document.getElementById("modalProductPrice");
     const modalProductImg = document.getElementById("modalProductImg");
+    const modalPriceItem = document.getElementById("modalPriceItem");
+    const modalTotalPay = document.getElementById("modalTotalPay");
+    const modalPromptTotal = document.getElementById("modalPromptTotal");
     const orderStatus = document.getElementById("orderStatus");
 
     function openModalWithProduct(name, price, img) {
+        const numericPrice = parseInt(price, 10) || 169;
+        const totalToPay = numericPrice + DELIVERY_FEE;
+
         productNameInput.value = name || 'Eikosha Air Spencer';
-        productPriceValInput.value = price || '169 TJS';
+        productPriceValInput.value = totalToPay + ' TJS';
         modalProductTitle.textContent = name || 'Eikosha Air Spencer';
-        modalProductPrice.textContent = price || '169 TJS';
+        modalProductPrice.textContent = numericPrice + ' TJS';
+
+        if (modalPriceItem) modalPriceItem.textContent = numericPrice + ' TJS';
+        if (modalTotalPay) modalTotalPay.textContent = totalToPay + ' TJS';
+        if (modalPromptTotal) modalPromptTotal.textContent = totalToPay + ' TJS';
+
         if (img) {
             modalProductImg.src = img;
         } else {
-            modalProductImg.src = 'images/marine-squash.jpg';
+            modalProductImg.src = 'images/5386605909880020266_121.jpg';
         }
 
         modal.classList.add('active');
@@ -361,7 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', (e) => {
             const product = btn.getAttribute('data-product') || 'Eikosha Air Spencer Машварат';
             const price = btn.getAttribute('data-price') || '169 TJS';
-            const img = btn.getAttribute('data-img') || 'images/marine-squash.jpg';
+            const img = btn.getAttribute('data-img') || 'images/5386605909880020266_121.jpg';
             openModalWithProduct(product, price, img);
         });
     });
@@ -378,16 +432,34 @@ document.addEventListener('DOMContentLoaded', () => {
         orderForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            const paymentConfirm = document.getElementById('userPaymentConfirm');
+            if (paymentConfirm && !paymentConfirm.checked) {
+                alert('⚠️ Лутфан аввал маблағро пардохт намуда, катакчаи "Ман маблағро пардохт намудам ва тасдиқ мекунам"-ро тасдиқ намоед!');
+                paymentConfirm.focus();
+                return;
+            }
+
+            const paymentProof = document.getElementById('userPaymentProof') ? document.getElementById('userPaymentProof').value.trim() : '';
+            if (!paymentProof) {
+                alert('⚠️ Лутфан рақами телефон ё чекеро, ки аз он пардохт намудед, ворид кунед.');
+                document.getElementById('userPaymentProof').focus();
+                return;
+            }
+
             const name = document.getElementById('userName').value.trim();
             const phone = document.getElementById('userPhone').value.trim();
-            const city = document.getElementById('userCity').value.trim() || 'Душанбе (ройгон)';
+            const city = document.getElementById('userCity').value.trim() || 'Душанбе';
             const product = productNameInput.value;
-            const price = productPriceValInput.value;
+            const numericPrice = parseInt(modalProductPrice.textContent, 10) || 169;
+            const totalWithDelivery = numericPrice + DELIVERY_FEE;
 
-            const message = `🇯🇵 <b>ФАРМОИШИ НАВИ EIKOSHA (ХАРИДИ ФАВРӢ)!</b>\n\n` +
+            const message = `🇯🇵 <b>ФАРМОИШИ НАВ АЗ VORTEX.AUTO_TJ (ХАРИДИ ФАВРӢ)!</b>\n\n` +
                             `📦 <b>Маҳсулот:</b> ${product}\n` +
-                            `💰 <b>Нарх:</b> ${price}\n` +
-                            `🚚 <b>Интиқол:</b> РОЙГОН (ш. Душанбе)\n` +
+                            `💵 <b>Нархи маҳсулот:</b> ${numericPrice} TJS\n` +
+                            `🚚 <b>Интиқол (Даставка):</b> ${DELIVERY_FEE} TJS\n` +
+                            `💰 <b>ҶАМЪИ ПАРДОХТ:</b> <b>${totalWithDelivery} TJS</b>\n\n` +
+                            `💳 <b>ҲОЛАТИ ПАРДОХТ:</b> ✅ ПАРДОХТ ШУДААСТ (Пешпардохт)\n` +
+                            `🧾 <b>Аз рақам / Рақами чек:</b> ${paymentProof}\n\n` +
                             `👤 <b>Мизоҷ:</b> ${name}\n` +
                             `📞 <b>Телефон:</b> ${phone}\n` +
                             `📍 <b>Шаҳр/Суроға:</b> ${city}\n` +
@@ -410,7 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (response.ok) {
-                    orderStatus.textContent = '✅ Ташаккур! Фармоиши шумо қабул шуд. Мо ба зудӣ ба шумо занг мезанем!';
+                    orderStatus.textContent = '✅ Ташаккур! Пардохт ва фармоиши шумо қабул шуд. Мо ба зудӣ ба шумо занг мезанем!';
                     orderStatus.style.color = '#10b981';
                     orderForm.reset();
                     setTimeout(() => {
